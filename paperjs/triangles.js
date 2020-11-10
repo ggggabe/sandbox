@@ -2,26 +2,20 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * */
 
-const Vector2 = (x, y) => [x, y]
 
-const center = ([x0, y0], [w, h]) => {
-  return Vector2(x0 + (w)/2, y0 + (h/2))
+// R2 u [0, 1] -> R2
+const PointHomotopy = ( a, b, t ) => {
+  return (a.multiply(t)).add(b.multiply(1 - t))
 }
 
-const triangle = ([x, y], o) => {
-
+// R1 u [0, 1] -> R1
+const RHomotopy = (a, b, t) => {
+  return a * (t) + b * (1 - t)
 }
 
-const homotopy = ([x0, x1], [t0, t1], fn, x) => {
-  const p = fn(x)
-
-  return x0 * ((t1 - p)/ (t1-t0)) +  x1 * ((p - t0)/ (t1-t0))
-}
 
 const pointHomotopy = (p1, p2, fnx, fny, t) => {
   with (paper) {
-
-    return p1.multiply(( (p1j
     return new Point(
       homotopy(
         [p1.x, p2.x],
@@ -130,8 +124,8 @@ window.onload = function() {
     c2.fillColor = 'rgba(79,86, 168, .5)'
     c1.fillColor = 'hsl(235deg, 36%, 46%)'
     const c3 = makeCircle(new Point(0, 0))
-    c3.set({radius: 10})
     c3.fillColor = 'red'
+    c3.size = 5
 
 
     const intersection = makeIntersection(view.center)
@@ -141,14 +135,18 @@ window.onload = function() {
       c1.position = point.transform(new Matrix(-1,0,0,-1,0,0))
     }
 
+
     view.onFrame = ({count}) => {
-      c3.position = pointHomotopy(
-        c1.position, c2.position,
-        t => (Math.sin(t * .2) + 1)/2 ,
-        t => -(Math.sin(t * .2) + 1)/2 ,
-        count
+      const amp = count* (Math.PI/6) * .2
+
+      c3.position = R2Homotopy(
+        new Point(c1.position.y, -c1.position.x),
+        new Point(-c1.position.y, c1.position.x),
+        (Math.cos(Math.PI * amp) + 1)/2
+      ).add(
+        R2Homotopy(c1.position, c2.position, (Math.sin(amp) + 1)/2)
       )
+
     }
   }
-
 }
