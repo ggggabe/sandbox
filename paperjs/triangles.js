@@ -45,13 +45,10 @@ function makeCircle(center) {
     path.animate = ({count}) => {
       const point1 = new Point(0,0)
       const point2 = new Point(
-        homotopy(
-          [view.bounds.x, 0],
-          [-1, 1],
-          (x) => {
-            return Math.sin(x*.2)
-          },
-          count
+        RHomotopy(
+          new Point([view.bounds.x, 0]),
+          new Point([-1, 1]),
+          Math.sin(count*.2)
         ),
         0
       )
@@ -70,24 +67,24 @@ function makeIntersection(center) {
 
     return [
       new Point(
-        homotopy(
-          [x, x + width],
-          [0, 1],
-          () => Math.random()
-        ), homotopy(
-          [y, y + height],
-          [0, 1],
+        RHomotopy(
+          new Point([x, x + width]),
+          new Point([0, 1]),
+          Math.random()
+        ), RHomotopy(
+          new Point([y, y + height]),
+          new Point([0, 1]),
           () => Math.random()
         )
       ), new Point(
-        homotopy(
-          [x, x + width],
-          [0, 1],
-          () => Math.random()
-        ), homotopy(
-          [y, y + height],
-          [0, 1],
-          () => Math.random()
+        RHomotopy(
+          new Point([x, x + width]),
+          new Point([0, 1]),
+          Math.random()
+        ), RHomotopy(
+          new Point([y, y + height]),
+          new Point([0, 1]),
+          Math.random()
         ))
     ].map(
       point => new Path.Line({
@@ -139,12 +136,12 @@ window.onload = function() {
     view.onFrame = ({count}) => {
       const amp = count* (Math.PI/6) * .2
 
-      c3.position = R2Homotopy(
+      c3.position = PointHomotopy(
         new Point(c1.position.y, -c1.position.x),
         new Point(-c1.position.y, c1.position.x),
         (Math.cos(Math.PI * amp) + 1)/2
       ).add(
-        R2Homotopy(c1.position, c2.position, (Math.sin(amp) + 1)/2)
+        PointHomotopy(c1.position, c2.position, (Math.sin(amp) + 1)/2)
       )
 
     }
