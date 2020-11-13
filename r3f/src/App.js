@@ -21,12 +21,11 @@ function PostProcessing() {
   return (
     <effectComposer ref={composer} args={[gl]}>
       <renderPass attachArray='passes' scene={scene} camera={camera} />
-      <unrealBloomPass attachArray='passes' args={[ aspectRatio, .4, 1, .4
-      ]}/>
+      <unrealBloomPass attachArray='passes' args={[ aspectRatio, .4, 1, .4]}/>
       <filmPass attachArray='passes' args={[
         .3,
         .3,
-        size.height*3,
+        size.height,
         false
       ]} />
     </effectComposer>
@@ -52,18 +51,19 @@ function Box (props) {
       onPointerOver={ e => setHover(true) }
       onPointerOut={ e => setHover(false) }
     >
-      <sphereBufferGeometry attach="geometry" args={[3, 128, 128]} />
-      <meshStandardMaterial attach='material' color='white' wireframe/>
+      <boxBufferGeometry attach="geometry" args={[10,10]} />
+      <meshStandardMaterial attach='material' color='white' />
     </mesh>
   )
 }
 
 
 const Bar = (props) => {
+  const { on } = props
   return (
       <mesh {...props}>
         <boxBufferGeometry attach='geometry' args={[10, 2, 2]}/>
-        <meshLambertMaterial emissive={ new THREE.Color('hsl(22, 92%, 51%)')} attach='material'/>
+        <meshLambertMaterial emissive={ new THREE.Color(`hsl(22, 92%, ${on ? '51%' : '7%'})`)} attach='material'/>
       </mesh>
   )
 }
@@ -75,7 +75,8 @@ const Bars = (props) => {
 export default function App() {
   return (
     <Canvas camera={{fov: 100, position: [0,0,30]}} color='#190314'>
-
+      <spotLight position={[20, 0, 0]} penumbra={1} color='#ee99ee'/>
+      <spotLight position={[-20, 0, 0]} penumbra={1} color='#9999ee'/>
 
       <mesh>
         <planeBufferGeometry attach='geometry' args={[10000, 10000]} />
@@ -86,8 +87,12 @@ export default function App() {
       <Box position={[10, 0, 10]} />
 
       {[
-        -8, -4, 0, 4, 8, 12
-      ].map(y => <Bar position={[0, y, 0]} key={y} />)
+        -8, -4, 0, 4,
+      ].map(y => <Bar position={[0, y, 0]} key={y} on={true} />)
+      }
+      {[
+         8, 12
+      ].map(y => <Bar position={[0, y, 0]} key={y} on={true} />)
       }
       <PostProcessing />
 

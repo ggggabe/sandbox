@@ -139,9 +139,9 @@ window.onload = function() {
       c3.position = PointHomotopy(
         new Point(c1.position.y, -c1.position.x),
         new Point(-c1.position.y, c1.position.x),
-        (Math.cos(Math.PI * amp) + 1)/2
+        (Math.cos(Math.PI * amp * .2) + 1)/2
       ).add(
-        PointHomotopy(c1.position, c2.position, (Math.sin(amp) + 1)/2)
+        PointHomotopy(c1.position, c2.position, (Math.sin(amp * .2) + 1)/2)
       )
 
     }
